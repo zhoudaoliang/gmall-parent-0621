@@ -15,9 +15,6 @@
         <module>common-util</module>
         <module>service-util</module>
         <module>web-util</module>
-        <module>common-util</module>
-        <module>service-uti</module>
-        <module>web-util</module>
     </modules>
 
 
