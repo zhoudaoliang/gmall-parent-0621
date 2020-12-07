@@ -38,5 +38,12 @@ public class SpuSaleAttr extends BaseEntity {
 	@TableField(exist = false)
 	List<SpuSaleAttrValue> spuSaleAttrValueList;
 
+	public List<SpuSaleAttrValue> getSpuSaleAttrValueList() {
+		return spuSaleAttrValueList;
+	}
+
+	public void setSpuSaleAttrValueList(List<SpuSaleAttrValue> spuSaleAttrValueList) {
+		this.spuSaleAttrValueList = spuSaleAttrValueList;
+	}
 }
 
