@@ -33,7 +33,7 @@ public class SkuApiController {
 
     @RequestMapping("spuSaleAttrList/{spuId}")
     public Result spuSaleAttrList(@PathVariable("spuId") Long spuId){
-        List<SpuSaleAttr> spuSaleAttrs = spuService.spuSaleAttrList(spuId);
+        List<SpuSaleAttr> spuSaleAttrs =  spuService.spuSaleAttrList(spuId);
         return Result.ok(spuSaleAttrs);
     }
 

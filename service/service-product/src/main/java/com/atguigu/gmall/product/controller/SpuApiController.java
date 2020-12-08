@@ -34,8 +34,8 @@ public class SpuApiController {
 
     @RequestMapping("baseSaleAttrList")
     public Result baseSaleAttrList(){
-        List<BaseSaleAttr>baseSaleAttrList = spuService.baseSaleAttrList();
-        return Result.ok(baseSaleAttrList);
+        List<BaseSaleAttr>baseSaleAttrs = spuService.baseSaleAttrList();
+        return Result.ok(baseSaleAttrs);
     }
 
     @RequestMapping("saveSpuInfo")

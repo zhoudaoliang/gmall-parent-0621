@@ -18,10 +18,9 @@ public class ItemApiController {
     @Autowired
     ItemService itemService;
 
-    @RequestMapping("api/item/getItem/{skuId}")
+    @RequestMapping("getItem/{skuId}")
     Map<String, Object> getItem(@PathVariable("skuId") Long skuId) {
         Map<String, Object> map = itemService.getItem(skuId);
-
         return map;
     }
 }

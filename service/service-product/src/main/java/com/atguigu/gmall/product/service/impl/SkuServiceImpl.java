@@ -1,5 +1,6 @@
 package com.atguigu.gmall.product.service.impl;
 
+import com.atguigu.gmall.common.constant.RedisConst;
 import com.atguigu.gmall.model.product.*;
 import com.atguigu.gmall.product.mapper.SkuAttrValueMapper;
 import com.atguigu.gmall.product.mapper.SkuImageMapper;
@@ -10,6 +11,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -33,6 +35,9 @@ public class SkuServiceImpl implements SkuService {
     @Autowired
     SkuSaleAttrValueMapper skuSaleAttrValueMapper;
 
+    @Autowired
+    RedisTemplate redisTemplate;
+
 
     @Override
     public void saveSkuInfo(SkuInfo skuInfo) {
@@ -48,20 +53,19 @@ public class SkuServiceImpl implements SkuService {
         List<SkuSaleAttrValue> skuSaleAttrValueList = skuInfo.getSkuSaleAttrValueList();
         if (null != skuSaleAttrValueList) {
             for (SkuSaleAttrValue skuSaleAttrValue : skuSaleAttrValueList) {
-                skuSaleAttrValue.setSpuId(sku_id);
+                skuSaleAttrValue.setSkuId(sku_id);
                 skuSaleAttrValue.setSpuId(skuInfo.getSpuId());
                 skuSaleAttrValueMapper.insert(skuSaleAttrValue);
             }
         }
 
         List<SkuAttrValue> skuAttrValueList = skuInfo.getSkuAttrValueList();
-        if (null != skuAttrValueList) {
+        if(null!=skuAttrValueList){
             for (SkuAttrValue skuAttrValue : skuAttrValueList) {
                 skuAttrValue.setSkuId(sku_id);
                 skuAttrValueMapper.insert(skuAttrValue);
             }
         }
-
     }
 
 
@@ -73,9 +77,28 @@ public class SkuServiceImpl implements SkuService {
 
     @Override
     public SkuInfo getSkuInfoById(Long skuId) {
+        long currentTimeMillisStart = System.currentTimeMillis();
+        SkuInfo skuInfo = null;
+        // 访问nosql
+        skuInfo = (SkuInfo) redisTemplate.opsForValue().get(RedisConst.SKUKEY_PREFIX+skuId+RedisConst.SKUKEY_SUFFIX);
+        if(null==skuInfo){
+            // 访问db
+            skuInfo = getSkuInfoByIdFromDb(skuId);
+
+            // 同步缓存
+            redisTemplate.opsForValue().set(RedisConst.SKUKEY_PREFIX+skuId+RedisConst.SKUKEY_SUFFIX,skuInfo);
+        }
+
+        long currentTimeMillisEnd = System.currentTimeMillis();
+        System.out.println(currentTimeMillisEnd-currentTimeMillisStart+"毫秒");
+        return skuInfo;
+    }
+
+    private SkuInfo getSkuInfoByIdFromDb(Long skuId) {
         SkuInfo skuInfo = skuInfoMapper.selectById(skuId);
+
         QueryWrapper<SkuImage> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("sku_id", skuId);
+        queryWrapper.eq("sku_id",skuId);
         List<SkuImage> skuImages = skuImageMapper.selectList(queryWrapper);
         skuInfo.setSkuImageList(skuImages);
         return skuInfo;

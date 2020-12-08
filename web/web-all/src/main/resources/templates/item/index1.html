@@ -1125,15 +1125,19 @@
             spuSaleAttrFun(index, spuSaleAttrValueId) {
                 debugger
                 this.isAddCart = true
-                var valuesSkuJson = JSON.parse(this.valuesSkuJson);
+                // alert(this.valuesSkuJson);
+                var valuesSkuJson = JSON.parse(this.valuesSkuJson);//页面保存的jsonMap
 
                 //根据索引替换已选中的spuSaleAttrValueId
                 this.selectValuesSkus[index] = spuSaleAttrValueId
 
-                var valuesSku = this.selectValuesSkus.join('|')
+                var valuesSku = this.selectValuesSkus.join('|')//用户选择的属性值
+
+                // alert(valuesSku);
+
                 //查看新组装的数据是否存在skuId，如果存在跳到该页面，如果不存在控制选中状态
                 var curSkuId = valuesSkuJson[valuesSku]
-
+                // alert(curSkuId)
                 if (curSkuId) {
                     if(curSkuId != this.skuId) {
                         window.location.href = '/' + curSkuId + '.html'

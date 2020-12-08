@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Daoliang Zhou
@@ -18,7 +19,11 @@ public interface SpuService {
 
     void saveSpuInfo(SpuInfo spuInfo);
 
+    List<SpuSaleAttr> getSpuSaleAttrListCheckBySku(Long spuId, Long skuId);
+
     List<SpuSaleAttr> spuSaleAttrList(Long spuId);
 
     List<SpuImage> spuImageList(Long spuId);
+
+    Map<String, Long> getSaleAttrValuesBySpu(Long spuId);
 }
